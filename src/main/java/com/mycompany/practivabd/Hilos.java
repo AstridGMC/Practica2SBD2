@@ -15,14 +15,21 @@ import javax.swing.JOptionPane;
  */
 public class Hilos {
 
-    public void HiloIncremento(Connection conn,int valor, long tiempo, long sleep) {
+    public void HiloIncremento(Connection conn,int valor, long tiempo, long sleep, boolean bloqueo) {
         long t0 = System.nanoTime();
         Runnable runnable = () -> {
             while ((System.nanoTime() - t0) / 1000000000 <= tiempo) {
                 try {
-                    Thread.sleep(sleep);
-                    Conector.CambiarValor(valor, 1,conn);
+                    
+                    if(bloqueo==true){
+                        Conector.CambiarValorLock(valor, 1,conn);
+                    }else{
+                        Conector.CambiarValor(valor, 1,conn);
+                    }
+                    Principal.textResumen.append("  sumando\n");
                     System.out.println("sumando");
+                    Principal.i=Principal.i+1;
+                    Thread.sleep(sleep);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -34,13 +41,18 @@ public class Hilos {
         hilo.start();
     }
     
-    public void HiloDecremento(Connection conn, int valor, long tiempo, long sleep) {
+    public void HiloDecremento(Connection conn, int valor, long tiempo, long sleep, boolean bloqueo) {
         long t0 = System.nanoTime();
         Runnable runnable = () -> {
             while ((System.nanoTime() - t0) / 1000000000 <= tiempo) {
                 try {
                     Thread.sleep(sleep);
-                    Conector.CambiarValor(valor, 2, conn);
+                    if(bloqueo==true){
+                    Conector.CambiarValorLock(valor, 2, conn);
+                    }else{
+                        Conector.CambiarValor(valor, 2, conn);
+                    }
+                    Principal.textResumen.append("  Restando\n");
                     System.out.println("restando");
                 } catch (InterruptedException e) {
                     e.printStackTrace();

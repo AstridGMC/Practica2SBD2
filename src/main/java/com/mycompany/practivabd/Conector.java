@@ -66,7 +66,7 @@ public class Conector {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void CambiarValor(int valor, int tipo, Connection conn){
         
         try {
@@ -87,6 +87,33 @@ public class Conector {
                 preparedStmt.executeUpdate();
             }
             
+        } catch (SQLException ex) {
+            Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static void CambiarValorLock(int valor, int tipo, Connection conn){
+        
+        try {
+            conn.createStatement().execute("LOCK TABLES `Movimiento` WRITE");
+
+            String query = "update Movimiento set campoIncremento = ?";
+            PreparedStatement preparedStmt;
+            preparedStmt = conn.prepareStatement(query);
+            int valorTabla = Integer.parseInt(Tabla(conn));
+            if(tipo==1){//incremento
+                preparedStmt.setInt(1, valorTabla+valor);
+                preparedStmt.executeUpdate();
+                Principal.txtValorT.setText(String.valueOf(valorTabla+valor));
+            }else if(tipo==2){//decremento
+                preparedStmt.setInt(1, valorTabla-valor);
+                preparedStmt.executeUpdate();
+                Principal.txtValorT.setText(String.valueOf(valorTabla-valor));
+            }else{
+                  preparedStmt.setInt(1,valor);
+                preparedStmt.executeUpdate();
+            }
+            conn.createStatement().execute("UNLOCK TABLES");
         } catch (SQLException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
         }
