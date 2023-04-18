@@ -1,5 +1,5 @@
-
 package Frontend;
+
 import com.mycompany.practivabd.Conector;
 import com.mycompany.practivabd.Hilos;
 import java.sql.Connection;
@@ -7,29 +7,28 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
+
 /**
  *
  * @author astrid
  */
 public class Principal extends javax.swing.JFrame {
 
-    public static int i=-1;
-    static int incremento=1;
-    static int decremento=2;
-    static int tiempoH1=2;
-    static int tiempoH2=2;
-    static int tiempoEjecucion=2;
-    static int valorInicial=2;
+    public static int i = -1;
+    static int incremento = 1;
+    static int decremento = 2;
+    static long tiempoH1 = 2000;
+    static long tiempoH2 = 2000;
+    static int tiempoEjecucion = 10;
+    static int valorInicial = 2;
     /**
      * Creates new form Principal
      */
     Connection conn;
+
     public Principal() {
         initComponents();
-        conn= Conector.conectar();
-        //Conector.CambiarValor(4,2);
-
-        //System.out.println(Conector.tabla(conn)[0]);
+        conn = Conector.conectar();
         txtValorT.setText(Conector.Tabla(conn));
         actualizarInfo();
     }
@@ -47,7 +46,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtValorT = new javax.swing.JLabel();
         btnIniciar = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jScrollPane1 = new javax.swing.JScrollPane();
         textResumen = new javax.swing.JTextArea();
@@ -94,11 +93,11 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(102, 255, 204));
-        jButton2.setIcon(new javax.swing.ImageIcon("/home/astrid/Descargas/recargar.png")); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnActualizar.setBackground(new java.awt.Color(102, 255, 204));
+        btnActualizar.setIcon(new javax.swing.ImageIcon("/home/astrid/Descargas/recargar.png")); // NOI18N
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnActualizarActionPerformed(evt);
             }
         });
 
@@ -211,7 +210,7 @@ public class Principal extends javax.swing.JFrame {
             .addComponent(txtValorT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2)
+                .addComponent(btnActualizar)
                 .addGap(133, 133, 133)
                 .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(147, 153, Short.MAX_VALUE)
@@ -270,7 +269,7 @@ public class Principal extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel8))
                             .addComponent(btnIniciar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton2))
+                    .addComponent(btnActualizar))
                 .addGap(20, 20, 20))
         );
 
@@ -331,82 +330,87 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
-        if(btnLock.isSelected()){
-            Principal.textResumen.append("----"+ "CON BLOQUEO"+"----"
-               +" incrementando "+ incremento+
-               " Decrementando "+ decremento+"\n");
-        }else{
-            Principal.textResumen.append("----"+ "SIN BLOQUEO"+"----\n"
-               +" incrementando "+ incremento+
-               " Decrementando "+ decremento +"\n");
+        if (btnLock.isSelected()) {
+            Principal.textResumen.append("\n----" + "CON BLOQUEO" + "----\n"
+                    + " incrementando " + incremento
+                    + " Decrementando " + decremento
+                    + "\nVALOR INICIO: " + Conector.Tabla(conn) + "\n");
+        } else {
+            Principal.textResumen.append("\n----" + "SIN BLOQUEO" + "----\n"
+                    + " incrementando " + incremento
+                    + " Decrementando " + decremento
+                    + "\nVALOR INICIO: " + Conector.Tabla(conn) + "\n");
         }
         Hilos hilos = new Hilos();
-        if(btnLock.isSelected()){
-            hilos.HiloIncremento(conn, incremento, tiempoEjecucion, tiempoH1*1000, true);
-            hilos.HiloDecremento(conn,decremento, tiempoEjecucion, tiempoH2*1000, true);
-            
-        }else{
-            hilos.HiloIncremento(conn, incremento, tiempoEjecucion, tiempoH1*1000, false);
-            hilos.HiloDecremento(conn,decremento, tiempoEjecucion, tiempoH2*1000, false);
+        if (btnLock.isSelected()) {
+            hilos.HiloIncremento(conn, incremento, tiempoEjecucion, tiempoH1, true);
+            hilos.HiloDecremento(conn, decremento, tiempoEjecucion, tiempoH2, true);
+
+        } else {
+            hilos.HiloIncremento(conn, incremento, tiempoEjecucion, tiempoH1, false);
+            hilos.HiloDecremento(conn, decremento, tiempoEjecucion, tiempoH2, false);
         }
-        
+
     }//GEN-LAST:event_btnIniciarActionPerformed
-    
+
     private void btnConfMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfMouseClicked
     }//GEN-LAST:event_btnConfMouseClicked
     private void btnGeneralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGeneralActionPerformed
         General general;
         try {
             general = new General(new javax.swing.JFrame(), true);
-               general.setVisible(true);
+            general.setVisible(true);
         } catch (SQLException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
-     
+
         txtValorT.setText(Conector.Tabla(conn));
         actualizarInfo();
     }//GEN-LAST:event_btnGeneralActionPerformed
-    
+
     private void btnIntervalosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIntervalosActionPerformed
-        TiempoIntervalos intervalos = new TiempoIntervalos(new javax.swing.JFrame(), true);    
+        TiempoIntervalos intervalos = new TiempoIntervalos(new javax.swing.JFrame(), true);
         intervalos.setVisible(true);
         actualizarInfo();
     }//GEN-LAST:event_btnIntervalosActionPerformed
-    
+
     private void btnValoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValoresActionPerformed
-        Valores valoresD= new Valores(new javax.swing.JFrame(), true);    
+        Valores valoresD = new Valores(new javax.swing.JFrame(), true);
         valoresD.setVisible(true);
         actualizarInfo();
     }//GEN-LAST:event_btnValoresActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        Conector.CambiarValor(1, 1, Conector.conectar());
         txtValorT.setText(Conector.Tabla(conn));
-        
-    }//GEN-LAST:event_jButton2ActionPerformed
+
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnLockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLockActionPerformed
-        if(btnLock.isSelected()){
-           btnLock.setText("Desbloquear");
-        }else{
+        if (btnLock.isSelected()) {
+            btnLock.setText("Desbloquear");
+        } else {
             btnLock.setText("Bloquear");
         }
     }//GEN-LAST:event_btnLockActionPerformed
 
-    void actualizarInfo(){
+    void actualizarInfo() {
         lblIncremento.setText(String.valueOf(incremento));
         lblDecremento.setText(String.valueOf(decremento));
-        lblIntervalo1.setText(String.valueOf(tiempoH1)+" seg");
-        lblIntervalo2.setText(String.valueOf(tiempoH2)+" seg");
-        lblTiempoEjecucion1.setText(String.valueOf(tiempoEjecucion)+" seg");
+        double i = (double) tiempoH1 / 1000;
+        double o = (double) tiempoH2 / 1000;
+        lblIntervalo1.setText(String.valueOf(i) + " seg");
+        lblIntervalo2.setText(String.valueOf(o) + " seg");
+        lblTiempoEjecucion1.setText(String.valueOf(tiempoEjecucion) + " seg");
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActualizar;
     private javax.swing.JMenu btnConf;
     private javax.swing.JMenuItem btnGeneral;
     private javax.swing.JButton btnIniciar;
     private javax.swing.JMenuItem btnIntervalos;
     private javax.swing.JToggleButton btnLock;
     private javax.swing.JMenuItem btnValores;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -16,8 +16,8 @@ public class TiempoIntervalos extends javax.swing.JDialog {
     public TiempoIntervalos(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        txtHilo1.setText(String.valueOf(Principal.tiempoH1));
-        txtHilo2.setText(String.valueOf(Principal.tiempoH2));       
+        txtHilo1.setText(String.valueOf(Principal.tiempoH1/1000));
+        txtHilo2.setText(String.valueOf(Principal.tiempoH2/1000));       
     }
 
     /**
@@ -145,8 +145,9 @@ public class TiempoIntervalos extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Principal.tiempoH1=Integer.parseInt(txtHilo1.getText());
-        Principal.tiempoH2=Integer.parseInt(txtHilo2.getText());
+        Principal.tiempoH1=(long) (Double.parseDouble(txtHilo1.getText())*1000);
+        System.out.println(Principal.tiempoH1);
+        Principal.tiempoH2=(long) (Double.parseDouble(txtHilo2.getText())*1000);
         this.setVisible(false);
     }//GEN-LAST:event_btnGuardarActionPerformed
 
